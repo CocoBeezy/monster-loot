@@ -1,0 +1,38 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>App</title>
+	<link href="/public/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="content"></div>
+	<script src="/public/bundle.js"></script>
+	<script src="/public/js/jquery-3.1.0.min.js"></script>
+	<script src="/public/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script>
+
+		function makeRequest() {
+			console.log(gapi.client);
+			var request = gapi.client.youtube.commentThreads.list({
+				part: 'snippet',
+				videoId: 'A-IFPcjn1Vg'
+			});
+			request.then(function(response) {
+				console.log('response', response);
+			});
+		}
+
+		function init() {
+			gapi.client.setApiKey('AIzaSyCA1nIi7etERKSlrUOoBkgmvyd0vpq2aP0');
+		}
+
+		gapi.load('client', init);
+	</script>
+</body>
+</html>
