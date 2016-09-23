@@ -1,6 +1,6 @@
 .ml-home-component {
   width: 100%;
-  height: 100vh;
+  height: 60vh;
 
   .ml-url-row {
     position: absolute;
@@ -10,6 +10,17 @@
 
   .ml-winner-container {
     background-color: #f0f0f0;
+    padding: 20px;
+
+    img {
+      padding-right: 10px;
+      border-right: 1px solid #000;
+      margin-right: 10px;
+    }
+
+    a {
+      text-decoration: underline;
+    }
   }
 
   button {

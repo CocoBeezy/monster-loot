@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import he from 'he';
 
 // Components
 import Loading from './loading';
@@ -40,12 +41,14 @@ class Home extends Component {
   loadComments = () => {
     gapi.client.load('youtube', 'v3').then(() => {
       const options = {
-        part: 'snippet',
+        part: 'snippet,replies',
 				videoId: this.state.videoId,
+        maxResults: 100,
         pageToken: this.state.nextPageToken
       };
 			gapi.client.youtube.commentThreads.list(options)
 			.then(response => {
+        console.log(response);
         this.setState({ nextPageToken: (response.result.nextPageToken? response.result.nextPageToken: null) });
 
         this.generateListOfComments(response.result.items);
@@ -59,7 +62,9 @@ class Home extends Component {
       return {
         index: index + this.state.commentsList.length,
         text: snippet.textDisplay,
-        author: snippet.authorDisplayName
+        author: snippet.authorDisplayName,
+        profileImgUrl: snippet.authorProfileImageUrl,
+        channelUrl: snippet.authorChannelUrl
       };
     });
     let newCommentsList = this.state.commentsList.concat(commentsList);
@@ -105,14 +110,18 @@ class Home extends Component {
     if(winner) {
       return (
         <div className="ml-winner-container">
-          <p>{`${winner.author}`}</p>
-          <p>{`Comment (${winner.index+1}): ${winner.text}`}</p>
+          <img src={`${winner.profileImgUrl}`}/>
+          <a href={`${winner.channelUrl}`}>{`${winner.author}`}</a>
+          <br />
+          <br />
+          <p>{`Comment (${winner.index+1}): ${he.decode(winner.text)}`}</p>
         </div>
       );
     }
   }
 
   render() {
+    console.log(this.state.commentsList.length);
     return (
       <div className="ml-home-component">
         <Loading show={this.state.loading} />
