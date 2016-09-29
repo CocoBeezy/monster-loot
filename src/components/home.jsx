@@ -59,12 +59,25 @@ class Home extends Component {
   generateListOfComments = (items) => {
     const commentsList = items.map((comment, index) => {
       const { snippet } = comment.snippet.topLevelComment;
+      let replies = [];
+      if(comment.replies) {
+        replies = comment.replies.comments.map((reply, index) => {
+          return {
+            index: index,
+            text: reply.snippet.textDisplay,
+            author: reply.snippet.authorDisplayName,
+            profileImgUrl: reply.snippet.authorProfileImageUrl,
+            channelUrl: reply.snippet.authorChannelUrl
+          }
+        });
+      }
       return {
         index: index + this.state.commentsList.length,
         text: snippet.textDisplay,
         author: snippet.authorDisplayName,
         profileImgUrl: snippet.authorProfileImageUrl,
-        channelUrl: snippet.authorChannelUrl
+        channelUrl: snippet.authorChannelUrl,
+        replies
       };
     });
     let newCommentsList = this.state.commentsList.concat(commentsList);
@@ -108,20 +121,34 @@ class Home extends Component {
   displayWinner = () => {
     const  { winner } = this.state;
     if(winner) {
+
+      const replyContent = winner.replies.map((reply, index) => {
+        return <div key={`${reply.name}-${index}`} className="ml-winner-container ml-winner-replies">
+          <img src={`${reply.profileImgUrl}`}/>
+          <a href={`${reply.channelUrl}`}>{`${reply.author}`}</a>
+          <br />
+          <br />
+          <p><strong>{`Reply (${reply.index+1}):`}</strong> {` ${he.decode(reply.text)}`}</p>
+          <br />
+        </div>
+      });
+
       return (
         <div className="ml-winner-container">
           <img src={`${winner.profileImgUrl}`}/>
           <a href={`${winner.channelUrl}`}>{`${winner.author}`}</a>
           <br />
           <br />
-          <p>{`Comment (${winner.index+1}): ${he.decode(winner.text)}`}</p>
+          <p><strong>{`Comment (${winner.index+1}):`}</strong>{` ${he.decode(winner.text)}`}</p>
+          <br />
+          { replyContent }
         </div>
       );
     }
   }
 
   render() {
-    console.log(this.state.commentsList.length);
+    console.log(this.state.commentsList);
     return (
       <div className="ml-home-component">
         <Loading show={this.state.loading} />
